@@ -42,7 +42,7 @@ def send_telegram(message):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {"chat_id": CHAT_ID, "text": message}
     try:
-        r = requests.post(url, data=payload, timeout=10)
+        r = requests.post(url, data=payload, timeout=30)
         if r.status_code != 200:
             logging.error(f"Eroare la trimiterea mesajului: {r.text}")
         else:
