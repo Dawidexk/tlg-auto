@@ -35,4 +35,4 @@ def send_telegram(message):
 if __name__ == "__main__":
     while True:
         check_calendar()
-        time.sleep(86400)  # rulează zilnic
+        time.sleep(60)  # rulează zilnic
