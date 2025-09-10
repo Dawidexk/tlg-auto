@@ -45,7 +45,7 @@ def send_telegram(message):
 def run_bot():
     while True:
         check_calendar()
-        time.sleep(86400)  # zilnic
+        time.sleep(60)  # zilnic
 
 if __name__ == "__main__":
     # pornește botul într-un thread separat
