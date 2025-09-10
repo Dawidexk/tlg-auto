@@ -1,11 +1,19 @@
+from flask import Flask
+import threading
+import os
 import requests
 from bs4 import BeautifulSoup
 import time
-import os
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 URL = "https://www.cdep.ro/co/sedinte.calendar"
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Bot is running!"
 
 def check_calendar():
     try:
@@ -29,10 +37,18 @@ def send_telegram(message):
         r = requests.post(url, data=payload, timeout=10)
         if r.status_code != 200:
             print("Eroare la trimiterea mesajului:", r.text)
+        else:
+            print("Mesaj trimis cu succes ✅")
     except Exception as e:
         print("Eroare la trimiterea pe Telegram:", e)
 
-if __name__ == "__main__":
+def run_bot():
     while True:
         check_calendar()
-        time.sleep(60)  # rulează zilnic
+        time.sleep(86400)  # zilnic
+
+if __name__ == "__main__":
+    # pornește botul într-un thread separat
+    threading.Thread(target=run_bot).start()
+    # pornește serverul web pe portul dat de Render
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
