@@ -24,7 +24,7 @@ def home():
 # Funcție de verificare site
 def check_calendar():
     try:
-        r = requests.get(URL, timeout=10)
+        r = requests.get(URL, timeout=30)
         r.raise_for_status()
         soup = BeautifulSoup(r.text, "html.parser")
         content = soup.get_text().lower()
@@ -42,7 +42,7 @@ def send_telegram(message):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {"chat_id": CHAT_ID, "text": message}
     try:
-        r = requests.post(url, data=payload, timeout=30)
+        r = requests.post(url, data=payload, timeout=10)
         if r.status_code != 200:
             logging.error(f"Eroare la trimiterea mesajului: {r.text}")
         else:
