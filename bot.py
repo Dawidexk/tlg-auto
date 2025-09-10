@@ -5,6 +5,8 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import logging
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 # Configurare logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -21,10 +23,15 @@ app = Flask(__name__)
 def home():
     return "Bot is running!"
 
+# Configurează sesiune cu retry-uri
+session = requests.Session()
+retries = Retry(total=5, backoff_factor=2, status_forcelist=[502, 503, 504])
+session.mount('https://', HTTPAdapter(max_retries=retries))
+
 # Funcție de verificare site
 def check_calendar():
     try:
-        r = requests.get(URL, timeout=30)
+        r = session.get(URL, timeout=60)
         r.raise_for_status()
         soup = BeautifulSoup(r.text, "html.parser")
         content = soup.get_text().lower()
@@ -54,7 +61,8 @@ def send_telegram(message):
 def run_bot():
     while True:
         check_calendar()
-        time.sleep(60)  # verifică la fiecare minut pentru test
+        time.sleep(86400)  # Rulează o dată pe zi (86400 secunde)
+        # Pentru test rapid: time.sleep(60)
 
 if __name__ == "__main__":
     # pornește botul într-un thread separat
